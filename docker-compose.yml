@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: deptracker
+      POSTGRES_USER: deptracker
+      POSTGRES_PASSWORD: deptracker
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/deptracker
+      DB_USERNAME: deptracker
+      DB_PASSWORD: deptracker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
