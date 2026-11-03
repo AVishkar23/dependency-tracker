@@ -67,8 +67,8 @@ class MavenVersionTest {
                 "1.0-rc-1", "1.0-rc-123",
                 "1.0-SNAPSHOT",
                 "1.0",
-                "1.0-1",
                 "1.0-sp-1", "1.0-sp-123",
+                "1.0-1",
                 "1.0.1",
                 "1.1", "1.9", "1.10",
                 "2.0-alpha-1", "2.0", "2.1.1",
@@ -102,6 +102,15 @@ class MavenVersionTest {
         assertLess("1.0", "1.0-1");
         assertLess("1.0-1", "1.0-2");
         assertLess("1.0-1", "1.0.1");
+    }
+
+    @Test
+    void qualifierSortsBeforeBuildSuffix() {
+        // Maven treats the hyphen-digit suffix as post-release material that
+        // outranks every qualifier: 1.0-alpha < 1.0-sp < 1.0-1 < 1.0.1.
+        assertLess("1.0-alpha-1", "1.0-1");
+        assertLess("1.0-SNAPSHOT", "1.0-1");
+        assertLess("1.0-sp-1", "1.0-1");
     }
 
     @Test

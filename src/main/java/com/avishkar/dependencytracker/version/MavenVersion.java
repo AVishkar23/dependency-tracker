@@ -161,10 +161,10 @@ public final class MavenVersion implements Comparable<MavenVersion> {
             return comparableQualifier(qualX.value()).compareTo(comparableQualifier(qualY.value()));
         }
         if (x instanceof Qual) {
-            return 1; // a qualifier outranks a sub-list at the same position
+            return -1; // a qualifier sorts before a build-style sub-list (1.0-alpha < 1.0-1)
         }
         if (y instanceof Qual) {
-            return -1;
+            return 1;
         }
         return compareItems(((Sub) x).items(), ((Sub) y).items());
     }
