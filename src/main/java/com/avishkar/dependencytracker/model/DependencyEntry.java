@@ -1,5 +1,6 @@
 package com.avishkar.dependencytracker.model;
 
+import com.avishkar.dependencytracker.version.MavenVersion;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -59,11 +60,19 @@ public class DependencyEntry {
         this.scope = scope;
     }
 
-    /** True when a policy ceiling exists and the project is behind it. */
+    /**
+     * True when a policy ceiling exists and is semantically newer than the current
+     * version, under Maven's version ordering. (An earlier version of this check
+     * compared strings for inequality, which flagged a dependency whose current
+     * version was <i>ahead</i> of the ceiling — and treated 2.15 and 2.15.0 as
+     * different versions.)
+     */
     public boolean isOutdated() {
-        return latestAllowedVersion != null
-                && currentVersion != null
-                && !latestAllowedVersion.equals(currentVersion);
+        if (latestAllowedVersion == null || currentVersion == null) {
+            return false;
+        }
+        return MavenVersion.parse(latestAllowedVersion)
+                .compareTo(MavenVersion.parse(currentVersion)) > 0;
     }
 
     public Long getId() {

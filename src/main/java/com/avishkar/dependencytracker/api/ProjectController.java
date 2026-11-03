@@ -2,6 +2,7 @@ package com.avishkar.dependencytracker.api;
 
 import com.avishkar.dependencytracker.api.ProjectDtos.CreateProjectRequest;
 import com.avishkar.dependencytracker.api.ProjectDtos.DependencyResponse;
+import com.avishkar.dependencytracker.api.ProjectDtos.OutdatedReportResponse;
 import com.avishkar.dependencytracker.api.ProjectDtos.ProjectResponse;
 import com.avishkar.dependencytracker.api.ProjectDtos.SetVersionRequest;
 import com.avishkar.dependencytracker.service.ProjectService;
@@ -56,6 +57,12 @@ public class ProjectController {
     @GetMapping("/{id}/dependencies/outdated")
     public List<DependencyResponse> listOutdated(@PathVariable Long id) {
         return projectService.listOutdated(id).stream().map(DependencyResponse::from).toList();
+    }
+
+    /** Outdated report: counts and per-dependency gap classification, worst first. */
+    @GetMapping("/{id}/report")
+    public OutdatedReportResponse report(@PathVariable Long id) {
+        return OutdatedReportResponse.from(projectService.report(id));
     }
 
     /** Set the version-policy ceiling ("latest allowed") for one dependency. */
